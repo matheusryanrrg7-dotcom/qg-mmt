@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QG MMT</title>
+<style>
+  :root { --bg:#14172b; --card:#1f2340; --line:#2e3360; --text:#eef0ff; --muted:#9aa0c8; --accent:#4f7cff; --hot:#21c58e; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.4 system-ui, "Segoe UI", sans-serif; padding:24px 16px; }
+  main { max-width:880px; margin:0 auto; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 20px; font-size:14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  section.on { border-color:var(--hot); box-shadow:0 0 0 2px var(--hot) inset; }
+  h2 { font-size:15px; letter-spacing:.06em; margin:0 0 4px; }
+  .step { color:var(--muted); font-size:13px; margin:0 0 12px; }
+  a { display:block; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; padding:12px 14px; border-radius:8px; margin-top:8px; }
+  a:hover { filter:brightness(1.12); }
+  a small { display:block; font-weight:400; opacity:.85; font-size:12px; }
+  input, textarea { width:100%; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px; font:inherit; margin-top:8px; }
+  button { width:100%; background:var(--hot); color:#06231a; border:0; border-radius:8px; padding:12px; font:inherit; font-weight:700; margin-top:8px; cursor:pointer; }
+  button:disabled { opacity:.6; cursor:wait; }
+  #status { margin:8px 0 0; color:#ffd479; }
+  #agente { grid-column:1 / -1; }
+  #chat { max-height:45vh; overflow-y:auto; margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+  #chat:empty { display:none; }
+  .msg { padding:10px 12px; border-radius:10px; white-space:pre-wrap; font-size:14px; line-height:1.5; max-width:92%; }
+  .msg.eu { align-self:flex-end; background:var(--accent); color:#fff; }
+  .msg.ag { align-self:flex-start; background:var(--bg); border:1px solid var(--line); }
+  .row { display:flex; gap:8px; }
+  .row button { flex:1; }
+  button.ghost { width:auto; background:transparent; color:var(--muted); border:1px solid var(--line); flex:0 0 auto; padding:12px 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>QG MMT</h1>
+  <p class="sub">Mineração → Modelagem → Tráfego. Nenhuma etapa avança sem a anterior validada. Os botões abrem em aba nova.</p>
+  <div class="grid">
+    <section id="mineracao">
+      <h2>1 · MINERAÇÃO</h2>
+      <p class="step">Achar ofertas com anúncios ativos há 30+ dias.</p>
+      <a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&media_type=all" target="_blank" rel="noopener">Biblioteca de Anúncios<small>Brasil · só anúncios ativos</small></a>
+      <a href="https://trends.google.com.br/trends/explore?geo=BR" target="_blank" rel="noopener">Google Trends<small>Brasil</small></a>
+      <a href="https://docs.google.com/spreadsheets/d/1w6kea2j4YUNGGf3CFdif7lvrYwlSsciTdWWZBAnk_LY/edit" target="_blank" rel="noopener">Planilha de Mineração<small>Uma linha por anúncio validado</small></a>
+    </section>
+    <section id="modelagem">
+      <h2>2 · MODELAGEM</h2>
+      <p class="step">Mover um pilar: formato ou nicho. Montar o low-ticket.</p>
+      <a href="https://www.canva.com/" target="_blank" rel="noopener">Canva<small>Montar o PDF</small></a>
+      <a href="https://app.applyfy.com.br/panel/dashboard" target="_blank" rel="noopener">ApplyFy<small>Produto e checkout</small></a>
+      
+    </section>
+    <section id="trafego">
+      <h2>3 · TRÁFEGO</h2>
+      <p class="step">Criativos demonstrativos, gancho nos 3 primeiros segundos.</p>
+      <a href="https://adsmanager.facebook.com/" target="_blank" rel="noopener">Gerenciador de Anúncios<small>Campanhas e métricas</small></a>
+      <a href="https://business.facebook.com/" target="_blank" rel="noopener">Meta Business Suite<small>Páginas, Instagram, pixel</small></a>
+    </section>
+    <section id="automacao">
+      <h2>AUTOMAÇÃO</h2>
+      <p class="step">Agentes e fluxos que alimentam o Obsidian.</p>
+      <a href="https://gzneverbroke.app.n8n.cloud/home/workflows" target="_blank" rel="noopener">Workflows do n8n<small>gzneverbroke</small></a>
+    </section>
+    <section id="agente">
+      <h2>FALAR COM O AGENTE</h2>
+      <p class="step">Converse aqui. Cada resposta também vira uma nota em Obsidian › Ideias.</p>
+      <input id="senha" type="password" placeholder="Senha do QG (fica salva neste navegador)" autocomplete="off">
+      <div id="chat"></div>
+      <textarea id="pedido" rows="2" placeholder="Escreva e aperte Ctrl+Enter · ex.: pesquisa o nicho de manicures · aprofunda a 2"></textarea>
+      <p id="status" class="step"></p>
+      <div class="row">
+        <button id="enviar" type="button">Enviar ao agente</button>
+        <button id="nova" type="button" class="ghost">Nova conversa</button>
+      </div>
+    </section>
+  </div>
+</main>
+<script>
+  var sala = new URLSearchParams(location.search).get("sala");
+  var el = sala && document.getElementById(sala);
+  if (el) { el.classList.add("on"); el.scrollIntoView({ block: "center" }); }
+
+  var AGENTE = "https://gzneverbroke.app.n8n.cloud/webhook/gather-agent";
+  var senha = document.getElementById("senha"), pedido = document.getElementById("pedido"),
+      enviar = document.getElementById("enviar"), nova = document.getElementById("nova"),
+      status = document.getElementById("status"), chat = document.getElementById("chat");
+
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function novaSessao() { var s = "boss-" + Date.now(); gravar("qg-sessao", s); gravar("qg-chat", "[]"); return s; }
+
+  var sessao = ler("qg-sessao") || novaSessao();
+  var historico = [];
+  try { historico = JSON.parse(ler("qg-chat") || "[]"); } catch (e) {}
+  senha.value = ler("qg-senha") || "";
+
+  function bolha(quem, texto) {
+    var d = document.createElement("div");
+    d.className = "msg " + quem; d.textContent = texto;
+    chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+  }
+  historico.forEach(function (m) { bolha(m.q, m.t); });
+  function registrar(q, t) { historico.push({ q: q, t: t }); gravar("qg-chat", JSON.stringify(historico.slice(-60))); bolha(q, t); }
+
+  function respostaDe(txt) {
+    try {
+      var d = JSON.parse(txt); if (Array.isArray(d)) d = d[0] || {};
+      return d.output || d.resposta || d.text || "";
+    } catch (e) { return txt; }
+  }
+
+  nova.addEventListener("click", function () {
+    sessao = novaSessao(); historico = []; chat.textContent = "";
+    status.textContent = "Nova conversa iniciada. O agente não lembra da anterior.";
+  });
+
+  pedido.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) enviar.click();
+  });
+
+  enviar.addEventListener("click", function () {
+    var msg = pedido.value.trim();
+    if (!senha.value || !msg) { status.textContent = "Preencha a senha e a mensagem."; return; }
+    gravar("qg-senha", senha.value);
+    registrar("eu", msg); pedido.value = "";
+    var inicio = Date.now();
+    enviar.disabled = true; status.textContent = "Agente trabalhando… (mineração com busca pode levar 2 a 4 minutos)";
+    fetch(AGENTE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-QG-Senha": senha.value },
+      body: JSON.stringify({ message: msg, sessionId: sessao, hoje: new Date().toISOString().slice(0, 10) })
+    }).then(function (r) {
+      if (r.status === 401 || r.status === 403) throw new Error("Senha incorreta.");
+      if (!r.ok) throw new Error("Erro " + r.status + " no n8n. Veja Executions.");
+      return r.text();
+    }).then(function (txt) {
+      var resp = respostaDe(txt);
+      if (resp) { registrar("ag", resp); status.textContent = "Também salvo em Obsidian › Ideias."; }
+      else status.textContent = "Pronto! A resposta está em Obsidian › Ideias.";
+    }).catch(function (e) {
+      if (Date.now() - inicio > 90000) status.textContent = "Rodada longa: o agente continua trabalhando. O resultado vai aparecer na Planilha de Mineração e em Obsidian › Ideias em alguns minutos.";
+      else status.textContent = e.message || "Falha de conexão com o n8n.";
+    }).finally(function () { enviar.disabled = false; pedido.focus(); });
+  });
+</script>
+</body>
+</html>
